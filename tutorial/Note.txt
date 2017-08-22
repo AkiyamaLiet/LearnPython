@@ -1,0 +1,74 @@
+    def parse(self, response):
+        page = response.url.split("/")[-2]
+        filename = 'quotes-%s.html' % page
+        with open(filename, 'wb') as f:
+            f.write(response.body)
+        self.log('Saved file %s' % filename)
+		
+	保存文件的操作
+	
+	
+    >>> response.css('title::text').extract()
+	[u'Quotes to Scrape']
+	
+	>>> response.css('title').extract()
+	[u'<title>Quotes to Scrape</title>']
+	
+	加了 "::text" 意味着只取出title标签里的text文本
+	
+	
+	>>> response.css('title::text').extract_first()
+	
+	>>> response.css('title::text')[0].extract()
+	
+	将返回第一个元素，而不是整个列表
+	但使用 .extract_first()将会在匹配不适合的时候避免出现 IndexError 或者返回 None
+	
+	
+	>>> response.css('title::text').re(r'Quotes.*')
+	[u'Quotes to Scrape']
+	>>>
+	>>> response.css('title::text').re(r'Q\w+')
+	[u'Quotes']
+	>>>
+	>>> response.css('title::text').re(r'(\w+) to (\w+)')
+	[u'Quotes', u'Scrape']
+	
+	也可以使用正则表达式
+	
+	
+	>>> response.xpath('//title')
+	[<Selector xpath='//title' data=u'<title>Quotes to Scrape</title>'>]
+	>>>
+	>>> response.xpath('//title/text()').extract_first()
+	u'Quotes to Scrape'
+	
+	使用xpath来查找 （与前面使用css相区别）
+	
+	
+	>>> quote = response.css("div.quote")[0]
+	>>>
+	>>> title = quote.css("span.text::text").extract_first()
+	>>> title
+	
+	只取出第一个quote元素的文本输出
+	
+	
+	
+    def parse(self, response):
+    for quote in response.css('div.quote'):
+        yield {
+			'text': quote.css('span.text::text').extract_first(),
+			'author': quote.css('small.author::text').extract_first(),
+            'tags': quote.css('div.tags a.tag::text').extract(),
+        }
+	
+	
+	>>>
+	>>> response.css('li.next a').extract_first()
+	u'<a href="/page/2/">Next <span aria-hidden="true">\u2192</span></a>'
+	>>>
+	>>> response.css('li.next a::attr(href)').extract_first()
+	u'/page/2/'
+	
+	用这个可以找出下一页的链接

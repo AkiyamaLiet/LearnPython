@@ -1,0 +1,10 @@
+错误 1
+
+Scrapy 1.4.0 - no active project
+
+Unknown command: crawl
+
+Use "scrapy" to see available commands
+
+
+没有cd 到根目录
